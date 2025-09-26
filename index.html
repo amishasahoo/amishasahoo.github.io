@@ -9,25 +9,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #ffffff; /* plain white */
-    color: #333333; /* dark gray text for contrast */
-} */
+  
         body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    background: url('https://www.freepik.com/free-vector/digital-health-medical-research-background-with-heartbeat-line_153685336.htm#fromView=search&page=1&position=3&uuid=9e18a2e3-00a5-4278-af2d-5ceda176fd7c&query=healthcare') no-repeat center center fixed;
+    background: url('background.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
     position: relative;
     z-index: 0;
 }
 
-/* Add a semi-transparent dark overlay over the background */
 body::before {
     content: "";
     position: fixed;
@@ -35,9 +28,10 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);  /* adjust 0.5 to change opacity */
-    z-index: -1;  /* sit behind content */
+    background-color: rgba(0, 0, 0, 0.4); /* dim overlay */
+    z-index: -1;
 }
+
 
 
         .overlay {
