@@ -3,62 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Power BI Dashboard for Germany Data</title>
+    <title>Insight into Germany's Healthcare and Arthroplasty</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Styling -->
     <style>
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to right, #f0f2f5, #d9e2ec);
+            background: url('https://images.unsplash.com/photo-1588776814546-ec7c0e2ad9d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+        }
+
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+            min-height: 100vh;
+            padding: 60px 20px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
             text-align: center;
         }
 
-        .container {
-            background-color: white;
-            padding: 60px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-        }
-
         h1 {
-            color: #2b2d42;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 20px;
+            font-weight: 700;
         }
 
-        p {
-            color: #555;
+        .description {
+            max-width: 700px;
+            margin-bottom: 40px;
             font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button-box {
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 2px solid #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 220px;
+        }
+
+        .button-box:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
         }
 
         @media (max-width: 600px) {
-            .container {
-                padding: 30px;
-            }
-
             h1 {
                 font-size: 2rem;
             }
 
-            p {
+            .description {
                 font-size: 1rem;
             }
-        } 
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Power BI Dashboard for Germany Data</h1>
-        <p>Explore key insights and visualizations related to Germany’s economic and social indicators.</p>
+    <div class="overlay">
+        <h1>Insight into Germany's Healthcare and Arthroplasty</h1>
+        <div class="description">
+            Germany's healthcare system stands as one of the most advanced in the world.<br>
+            This dashboard provides in-depth analysis of key healthcare metrics.<br>
+            Explore trends in arthroplasty procedures and patient outcomes.<br>
+            Data is sourced through automated web scraping and visualized via Tableau.<br>
+            Navigate through the tools below to dive deeper into the data.
+        </div>
+
+        <div class="buttons">
+            <a href="python-webscraping.html" class="button-box">Python Web Scraping Code</a>
+            <a href="tableau-dashboard-1.html" class="button-box">Tableau Dashboard 1</a>
+            <a href="tableau-dashboard-2.html" class="button-box">Tableau Dashboard 2</a>
+        </div>
     </div>
 </body>
 </html>
