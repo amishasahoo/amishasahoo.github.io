@@ -19,6 +19,8 @@
     padding: 0;
     position: relative;
     z-index: 0;
+    overflow: hidden; /* 🚫 Disable scrolling */
+    height: 100vh;     /* Make sure content fits one screen */
 }
 
 body::before {
@@ -28,24 +30,23 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6); /* dim overlay */
+    background-color: rgba(0, 0, 0, 0.1); /* 🌫️ Fainter background */
     z-index: -1;
 }
 
-
-
-       .overlay {
+.overlay {
     background-color: transparent;
-    min-height: 100vh;
-    padding: 60px 40px; /* increased horizontal padding */
+    height: 100vh;
+    padding: 40px 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: left;
-    max-width: 1200px; /* increased from 800px */
+    max-width: 1600px;   /* 🧱 Wider layout */
     margin: 0 auto;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .description {
@@ -53,9 +54,10 @@ body::before {
     line-height: 1.6;
     margin-bottom: 40px;
     color: #f0f0f0;
-    width: 100%;            /* allow full width */
-    max-width: 1400px;      /* slightly smaller than container for spacing */
+    width: 100%;
+    max-width: 1000px; /* 🧱 Expanded width */
 }
+
 
 
 
@@ -130,9 +132,10 @@ body::before {
 </p>
 
     </div>
-</body>
-    <p style="font-size: 0.8rem; color: #ccc; margin-top: 40px;">
+<p style="font-size: 0.8rem; color: #ccc; margin-top: 40px;">
     Background image by <a href="https://www.freepik.com" target="_blank" style="color: #ccc;">Freepik</a>
 </p>
+</body>
+    
 
 </html>
