@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Python Web Scraping - Germany Healthcare</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet"/>
+
+  <!-- Prism.js for syntax highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 2rem;
+      color: #61dafb;
+    }
+
+    pre {
+      overflow-x: auto;
+      border-radius: 10px;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #61dafb;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Python Code: Web Scraping for Germany Healthcare PDFs</h1>
+
+    <pre><code class="language-python">
+import os
+import glob
+import fitz  # PyMuPDF
+import pandas as pd
+import re
+from tqdm import tqdm
+
+# ---------------------------
+# USER CONFIG
+# ---------------------------
+PDF_FOLDER = r"YOUR_PDF_FOLDER_PATH"
+MAX_PDFS = None
+OUTPUT_FILE_RAW = os.path.join(PDF_FOLDER, "File_Name.csv")
+
+# ---------------------------
+# HELPERS
+# ---------------------------
+def expand_rect(rect, add_left=0, add_top=0, add_right=0, add_bottom=0, page=None):
+    new = fitz.Rect(rect.x0 - add_left, rect.y0 - add_top, rect.x1 + add_right, rect.y1 + add_bottom)
+    if page is not None:
+        new = new & page.rect
+    return new
+
+def safe_search_for(page, text):
+    try:
+        return page.search_for(text)
+    except Exception:
+        return []
+
+def extract_year_from_filename(filename):
+    match = re.search(r'-(\d{4})-xml\.pdf$', filename)
+    if match:
+        return match.group(1)
+    return ""
+
+def extract_count_from_bbox(bbox_text, found_code):
+    if not bbox_text:
+        return None
+
+    text = bbox_text.replace("\n", " ").strip()
+    text_after_code = re.sub(r'^\s*' + re.escape(found_code) + r'\s*', '', text, flags=re.IGNORECASE).strip()
+
+    if re.match(r'^\(Datenschutz\)', text_after_code, flags=re.IGNORECASE):
+        return 1
+
+    m = re.match(r'^(\d+)\b', text_after_code)
+    if m:
+        return int(m.group(1))
+
+    return None
+
+# ---------------------------
+# PDF PROCESSING FUNCTION
+# ---------------------------
+ops_pattern = re.compile(r'\b5-\d{2,3}[a-zA-Z]?(?:\.[0-9a-zA-Z]+)?\b')
+
+def extract_count_after_ops(page_text, ops_match):
+    start = ops_match.end()
+    snippet = page_text[start:start+50].replace("\n", " ").strip()
+
+    if snippet.startswith("(Datenschutz)"):
+        return 1
+
+    m = re.search(r'\b\d+\b', snippet)
+    if m:
+        return int(m.group(0))
+
+    return None
+
+def process_pdf(pdf_path):
+    rows = []
+    fname = os.path.basename(pdf_path)
+    year = extract_year_from_filename(fname)
+
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception as e:
+        print(f"⚠️ Could not open {fname}: {e}")
+        return rows
+
+    IIN = Standortnummer = ""
+
+    for page in doc:
+        text = page.get_text()
+        if not Standortnummer and "Standortnummer:" in text:
+            instances = safe_search_for(page, "Standortnummer:")
+            if instances:
+                rect = expand_rect(instances[0], add_right=150, page=page)
+                Standortnummer = page.get_textbox(rect).strip().replace("Standortnummer:", "").strip()
+        if not IIN and "Institutionskennzeichen:" in text:
+            instances = safe_search_for(page, "Institutionskennzeichen:")
+            if instances:
+                rect = expand_rect(instances[0], add_right=150, page=page)
+                IIN = page.get_textbox(rect).strip().replace("Institutionskennzeichen:", "").strip()
+
+    for page in doc:
+        page_text = page.get_text()
+        matches = list(ops_pattern.finditer(page_text))
+        if not matches:
+            continue
+
+        unique_codes = {m.group(0) for m in matches}
+        rects_map = {code: page.search_for(code) or [] for code in unique_codes}
+
+        for match in matches:
+            found_code = match.group(0)
+            rects_for_code = rects_map.get(found_code, [])
+            rect = rects_for_code.pop(0) if rects_for_code else None
+
+            procedure_count = None
+            used_bbox = False
+
+            if rect:
+                adjusted = expand_rect(rect, add_right=100, page=page)
+                bbox_text = page.get_textbox(adjusted).strip()
+                procedure_count = extract_count_from_bbox(bbox_text, found_code)
+                used_bbox = True
+
+            if used_bbox and procedure_count is None:
+                continue
+
+            if not used_bbox:
+                procedure_count = extract_count_after_ops(page_text, match)
+
+            rows.append({
+                "Year": year,
+                "UniqueID": f"{IIN}_{Standortnummer}" if IIN or Standortnummer else "",
+                "IIN": IIN,
+                "Standortnummer": Standortnummer,
+                "OPS code": found_code,
+                "Procedure count": procedure_count,
+                "Source file": fname
+            })
+    doc.close()
+    return rows
+
+# ---------------------------
+# MAIN
+# ---------------------------
+def main():
+    pdf_files = sorted(glob.glob(os.path.join(PDF_FOLDER, "*.pdf")))
+    if MAX_PDFS:
+        pdf_files = pdf_files[:MAX_PDFS]
+
+    all_rows = []
+
+    for pdf in tqdm(pdf_files, desc="Processing PDFs", unit="pdf"):
+        rows = process_pdf(pdf)
+        all_rows.extend(rows)
+
+    df = pd.DataFrame(all_rows)
+    if not df.empty:
+        df = df[[
+            "Year", "UniqueID", "IIN", "Standortnummer",
+            "OPS code", "Procedure count", "Source file"
+        ]]
+    df.to_csv(OUTPUT_FILE_RAW, index=False, sep=',', encoding='utf-8-sig')
+    print(f"\n Saved {len(df)} rows to {OUTPUT_FILE_RAW}")
+
+if __name__ == "__main__":
+    main()
+    </code></pre>
+
+    <a href="index.html" class="back-link">&larr; Back to Homepage</a>
+  </div>
+</body>
+</html>
