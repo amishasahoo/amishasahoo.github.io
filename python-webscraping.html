@@ -134,7 +134,7 @@ def process_pdf(pdf_path):
     try:
         doc = fitz.open(pdf_path)
     except Exception as e:
-        print(f"⚠️ Could not open {fname}: {e}")
+        print(f"Could not open {fname}: {e}")
         return rows
 
     IIN = Standortnummer = ""
