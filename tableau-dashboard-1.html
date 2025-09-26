@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Healthcare Dashboard - Germany</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <title>Healthcare Overview - Germany</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         body {
             margin: 0;
@@ -14,13 +14,29 @@
             text-align: center;
         }
 
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #2c3e50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #34495e;
+        }
+
         h1 {
-            margin-top: 30px;
+            margin-top: 10px;
             font-size: 2rem;
         }
 
         .tableauPlaceholder {
-            margin: 40px auto;
+            margin: 30px auto 60px auto;
             max-width: 1200px;
         }
     </style>
@@ -28,6 +44,7 @@
 <body>
 
     <a href="index.html" class="back-button">← Back to Home</a>
+
     <h1>Germany Healthcare Overview Dashboard</h1>
 
     <div class='tableauPlaceholder' id='viz1758902172852' style='position: relative'>
@@ -42,7 +59,7 @@
             <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
             <param name='embed_code_version' value='3' />
             <param name='site_root' value='' />
-            <param name='name' value='HealthcareOverviewGermany&#47;GermanyOverview' />
+            <param name='name' value='HealthcareOverviewGermany/GermanyOverview' />
             <param name='tabs' value='no' />
             <param name='toolbar' value='yes' />
             <param name='static_image' value='https://public.tableau.com/static/images/He/HealthcareOverviewGermany/GermanyOverview/1.png' />
@@ -52,7 +69,6 @@
             <param name='display_overlay' value='yes' />
             <param name='display_count' value='yes' />
             <param name='language' value='en-US' />
-            <param name='filter' value='publish=yes' />
         </object>
     </div>
 
