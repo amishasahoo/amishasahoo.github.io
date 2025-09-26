@@ -51,21 +51,22 @@
         }
 
         .button-box {
-            background-color: rgba(255, 255, 255, 0.15);
-            border: 2px solid #ffffff;
-            padding: 20px 30px;
-            border-radius: 10px;
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            min-width: 220px;
-        }
+    background-color: #f0f0f0;       /* light gray background */
+    border: 2px solid #333333;       /* dark border */
+    color: #333333;                  /* dark text */
+    padding: 20px 30px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    min-width: 220px;
+}
 
-        .button-box:hover {
-            background-color: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
+.button-box:hover {
+    background-color: #e0e0e0;       /* slightly darker on hover */
+    transform: scale(1.05);
+}
+
 
         @media (max-width: 600px) {
             h1 {
