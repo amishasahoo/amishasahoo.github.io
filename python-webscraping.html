@@ -116,7 +116,7 @@ ops_pattern = re.compile(r'\b5-\d{2,3}[a-zA-Z]?(?:\.[0-9a-zA-Z]+)?\b')
 def extract_count_after_ops(page_text, ops_match):
     start = ops_match.end()
     snippet = page_text[start:start+50].replace("\n", " ").strip()
-
+ 
     if snippet.startswith("(Datenschutz)"):
         return 1
 
